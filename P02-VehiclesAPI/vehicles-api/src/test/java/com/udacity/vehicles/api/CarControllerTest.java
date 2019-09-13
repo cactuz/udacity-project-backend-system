@@ -32,6 +32,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 /**
  * Implements testing of the CarController class.
@@ -82,7 +85,18 @@ public class CarControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated())
-        .andReturn();
+                .andReturn();
+
+        MvcResult result = mvc.perform(
+                get("/cars/1")
+                        //.content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject json =  new JSONObject(result.getResponse().getContentAsString());
+        Assert.assertEquals("Impala" , json.getJSONObject("details").getString("model"));
     }
 
     /**
@@ -100,7 +114,6 @@ public class CarControllerTest {
                 .andReturn();
 
         JSONObject json =  new JSONObject(result.getResponse().getContentAsString());
-
         Assert.assertTrue(json.getJSONObject("_embedded").getJSONArray("carList").length()>0);
     }
 
@@ -118,7 +131,6 @@ public class CarControllerTest {
                 .andReturn();
 
         JSONObject json =  new JSONObject(result.getResponse().getContentAsString());
-
         Assert.assertTrue(json.getString("condition").contentEquals("USED"));
     }
 
@@ -128,8 +140,8 @@ public class CarControllerTest {
      */
     @Test
     public void deleteCar() throws Exception {
-        MvcResult result = mvc.perform(
-                delete("/cars/1")
+        mvc.perform(MockMvcRequestBuilders
+                .delete("/cars/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())

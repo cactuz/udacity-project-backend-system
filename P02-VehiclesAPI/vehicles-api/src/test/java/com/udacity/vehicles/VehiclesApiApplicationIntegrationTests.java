@@ -94,6 +94,7 @@ public class VehiclesApiApplicationIntegrationTests {
         mockMvc.perform(put("http://localhost:8080/cars/1002")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
+                        "       \"id\" : 1002,\n" +
                         "       \"createdAt\"  : \"2019-09-05T01:01:01\", \n" +
                         "       \"modifiedAt\" :\"\", \n" +
                         "       \"condition\"\t: \"USED\",\n" +  //changed
@@ -120,5 +121,9 @@ public class VehiclesApiApplicationIntegrationTests {
     public void deleteCars() throws Exception{
         mockMvc.perform(delete("http://localhost:8080/cars/1002"))
                 .andExpect(status().isOk());
+
+        //this tests that Car has been deleted
+        mockMvc.perform(get("http://localhost:8080/cars/1002"))
+                .andExpect(status().isNotFound());
     }
 }

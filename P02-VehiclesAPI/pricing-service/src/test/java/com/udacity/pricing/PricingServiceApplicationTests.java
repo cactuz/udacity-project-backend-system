@@ -39,7 +39,7 @@ public class PricingServiceApplicationTests {
 		mockMvc.perform(get("/prices")).andExpect(status()
                 .isOk())
 				.andExpect(content().json("{\"_embedded\" : { \"prices\" : [{},{},{},{},{},{},{}," +
-						"{},{},{},{},{}]}}"));
+						"{},{},{},{},{}, {}, {}]}}"));
 	}
 
     @Test
@@ -56,8 +56,7 @@ public class PricingServiceApplicationTests {
         MvcResult result = mockMvc.perform(get("/prices/1001")).andExpect(status()
                 .isOk()).andReturn();
         JSONObject json =  new JSONObject(result.getResponse().getContentAsString());
-        System.out.println(json);
-        Assert.assertTrue(json.getInt("price") == 75900);
+        Assert.assertEquals(75900, json.getInt("price"));
     }
 
     @Test

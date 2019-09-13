@@ -93,6 +93,12 @@ class CarController {
      */
     @PutMapping("/{id}")
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
+
+        if (id != car.getId()) {
+            ResponseEntity.badRequest().body("Path Car Id does not match Car Id in Body");
+        }
+
+        carService.save(car);
         Resource<Car> resource = assembler.toResource(new Car());
         return ResponseEntity.ok(resource);
     }

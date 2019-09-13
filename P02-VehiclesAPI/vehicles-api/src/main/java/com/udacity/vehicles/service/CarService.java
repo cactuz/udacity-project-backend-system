@@ -6,6 +6,8 @@ import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -39,6 +41,16 @@ public class CarService {
      * @return a list of all vehicles in the CarRepository
      */
     public List<Car> list() {
+
+        List<Car> carList= new ArrayList<>();
+
+        repository.findAll().forEach(car -> {car.setPrice(priceClient.getPrice(car.getId()));
+        car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(), car.getLocation().getLon())));
+
+        carList.add(car);
+        }
+                );
+
         return repository.findAll();
     }
 
